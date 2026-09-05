@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BancoWeb 2000 - Menú principal</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <div class="nubes nube-1"></div>
+    <div class="nubes nube-2"></div>
+
+    <div class="ventana">
+        <header class="barra-titulo">
+            <div class="titulo-programa">
+                <span class="logo">$</span>
+                <div>
+                    <h1>BancoWeb 2000</h1>
+                    <p>Sistema de Conciliación Bancaria</p>
+                </div>
+            </div>
+            <div class="botones-ventana" aria-hidden="true">
+                <span>_</span><span>□</span><span>×</span>
+            </div>
+        </header>
+
+        <div class="barra-info">
+            <button id="botonMenu" class="boton-menu" type="button" aria-label="Abrir menú">☰ Menú</button>
+            <span>Usuario conectado: <strong>Administrador</strong></span>
+            <span id="fechaActual">Cargando fecha...</span>
+        </div>
+
+        <div class="contenido">
+            <aside id="menuLateral" class="menu-lateral">
+                <div class="perfil">
+                    <div class="avatar">👤</div>
+                    <p>¡Bienvenido!</p>
+                    <small>Sesión activa</small>
+                </div>
+
+                <nav aria-label="Menú principal">
+                    <button class="opcion activa" data-seccion="dashboard">🏠 Dashboard</button>
+                    <button class="opcion" data-seccion="cheques">🧾 Cheques</button>
+                    <button class="opcion" data-seccion="depositos">💰 Depósitos</button>
+                    <button class="opcion" data-seccion="conciliacion">🧮 Conciliación</button>
+                    <button class="opcion" data-seccion="reportes">📊 Consultas / Reportes</button>
+                    <button class="opcion salir" data-seccion="salir">🚪 Salir</button>
+                </nav>
+
+                <div class="estado-sistema">
+                    <span class="luz"></span> Sistema en línea
+                </div>
+            </aside>
+
+            <main class="area-trabajo">
+                <section id="dashboard" class="seccion visible">
+                    <div class="encabezado-seccion">
+                        <div>
+                            <p class="ruta">Inicio &gt; Dashboard</p>
+                            <h2>Resumen bancario</h2>
+                        </div>
+                        <span class="etiqueta">Período actual</span>
+                    </div>
+
+                    <div class="mensaje-bienvenida">
+                        <span class="estrella">✦</span>
+                        <div>
+                            <h3>Panel principal</h3>
+                            <p>Desde este menú podrás administrar las operaciones bancarias de la institución.</p>
+                        </div>
+                    </div>
+
+                    <div class="tarjetas">
+                        <article class="tarjeta">
+                            <span class="icono">🧾</span>
+                            <p>Cheques emitidos</p>
+                            <strong>20</strong>
+                            <small>Datos de demostración</small>
+                        </article>
+                        <article class="tarjeta">
+                            <span class="icono">⏳</span>
+                            <p>Cheques pendientes</p>
+                            <strong>6</strong>
+                            <small>Por verificar</small>
+                        </article>
+                        <article class="tarjeta">
+                            <span class="icono">✖</span>
+                            <p>Cheques anulados</p>
+                            <strong>3</strong>
+                            <small>Durante el período</small>
+                        </article>
+                        <article class="tarjeta">
+                            <span class="icono">💾</span>
+                            <p>Depósitos registrados</p>
+                            <strong>15</strong>
+                            <small>Datos de demostración</small>
+                        </article>
+                    </div>
+
+                    <div class="panel-inferior">
+                        <div>
+                            <h3>Accesos rápidos</h3>
+                            <p>Selecciona una opción del menú lateral para continuar.</p>
+                        </div>
+                        <div class="reloj">🕘 Última conciliación: <strong>Agosto 2026</strong></div>
+                    </div>
+                </section>
+
+                <section id="proximamente" class="seccion aviso-modulo">
+                    <div class="monitor">🖥️</div>
+                    <p class="ruta">Inicio &gt; <span id="nombreModulo">Módulo</span></p>
+                    <h2 id="tituloModulo">Módulo</h2>
+                    <p>Esta sección se agregará en la siguiente parte del proyecto.</p>
+                    <button id="volverDashboard" type="button">Volver al Dashboard</button>
+                </section>
+            </main>
+        </div>
+
+        <footer>
+            <span>BancoWeb 2000 v1.0</span>
+            <span>Desarrollo de Software IV</span>
+        </footer>
+    </div>
+
+    <div id="notificacion" class="notificacion" role="status"></div>
+    <script src="js/menu.js"></script>
+</body>
+</html>
+
+const opciones = document.querySelectorAll('.opcion');
+const dashboard = document.getElementById('dashboard');
+const proximamente = document.getElementById('proximamente');
+const tituloModulo = document.getElementById('tituloModulo');
+const nombreModulo = document.getElementById('nombreModulo');
+const menuLateral = document.getElementById('menuLateral');
+const notificacion = document.getElementById('notificacion');
+
+const nombres = {
+    cheques: 'Cheques',
+    depositos: 'Depósitos',
+    conciliacion: 'Conciliación bancaria',
+    reportes: 'Consultas y reportes'
+};
+
+function colocarFecha() {
+    const fecha = new Date().toLocaleDateString('es-PA', {
+        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+    });
+    document.getElementById('fechaActual').textContent = fecha;
+}
+
+function mostrarDashboard() {
+    dashboard.classList.add('visible');
+    proximamente.classList.remove('visible');
+    opciones.forEach(opcion => opcion.classList.toggle('activa', opcion.dataset.seccion === 'dashboard'));
+    menuLateral.classList.remove('abierto');
+}
+
+function mostrarAviso(texto) {
+    notificacion.textContent = texto;
+    notificacion.classList.add('mostrar');
+    setTimeout(() => notificacion.classList.remove('mostrar'), 2300);
+}
+
+opciones.forEach(opcion => {
+    opcion.addEventListener('click', () => {
+        const seccion = opcion.dataset.seccion;
+
+        if (seccion === 'dashboard') {
+            mostrarDashboard();
+            return;
+        }
+
+        if (seccion === 'salir') {
+            mostrarAviso('El cierre de sesión se conectará al LoginServlet.');
+            menuLateral.classList.remove('abierto');
+            return;
+        }
+
+        opciones.forEach(item => item.classList.remove('activa'));
+        opcion.classList.add('activa');
+        dashboard.classList.remove('visible');
+        proximamente.classList.add('visible');
+        tituloModulo.textContent = nombres[seccion];
+        nombreModulo.textContent = nombres[seccion];
+        menuLateral.classList.remove('abierto');
+    });
+});
+
+document.getElementById('botonMenu').addEventListener('click', () => {
+    menuLateral.classList.toggle('abierto');
+});
+
+document.getElementById('volverDashboard').addEventListener('click', mostrarDashboard);
+colocarFecha();
+
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 28-08-2026 a las 22:17:36
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `proyecto1`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bitacora`
+--
+
+CREATE TABLE `bitacora` (
+  `id_bitacora` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `accion` varchar(20) NOT NULL,
+  `tabla_afectada` varchar(40) DEFAULT NULL,
+  `descripcion` varchar(200) NOT NULL,
+  `fecha` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cheques`
+--
+
+CREATE TABLE `cheques` (
+  `id_cheque` int(11) NOT NULL,
+  `numero_cheque` varchar(30) NOT NULL,
+  `fecha_cheque` date NOT NULL,
+  `id_proveedor` int(11) NOT NULL,
+  `monto` decimal(12,2) NOT NULL,
+  `monto_letras` varchar(300) NOT NULL,
+  `detalle` varchar(300) DEFAULT NULL,
+  `id_objeto_gasto` int(2) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1 = emitido. 2 = pendiente. 3 = cobrado. 4 = anulado. 5 = sacado de circulacion.',
+  `fecha_anulacion` datetime DEFAULT NULL,
+  `motivo_anulacion` varchar(300) DEFAULT NULL,
+  `fecha_salida_circulacion` datetime DEFAULT NULL,
+  `observacion_salida` varchar(300) DEFAULT NULL,
+  `id_usuario_creacion` int(11) NOT NULL,
+  `id_usuario_anulacion` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `conciliaciones`
+--
+
+CREATE TABLE `conciliaciones` (
+  `id_conciliacion` int(11) NOT NULL,
+  `periodo` varchar(7) NOT NULL,
+  `saldo_libros` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `depositos_transito` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `cheques_pendientes` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `saldo_banco` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `diferencia` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `fecha_conciliacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1 = en proceso. 2 = ajustada. 3 = verificada. 4 = cerrada.',
+  `id_usuario` int(11) NOT NULL,
+  `observaciones` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `conciliacion_detalle_cheque`
+--
+
+CREATE TABLE `conciliacion_detalle_cheque` (
+  `id_conciliacion` int(11) NOT NULL,
+  `id_cheque` int(11) NOT NULL,
+  `monto_al_momento` decimal(12,2) NOT NULL COMMENT 'Monto del cheque tomado en cuenta dentro de la conciliacion.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `conciliacion_detalle_deposito`
+--
+
+CREATE TABLE `conciliacion_detalle_deposito` (
+  `id_conciliacion` int(11) NOT NULL,
+  `id_deposito` int(11) NOT NULL,
+  `monto_al_momento` decimal(12,2) NOT NULL COMMENT 'Monto del deposito tomado en cuenta para la conciliacion.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `depositos`
+--
+
+CREATE TABLE `depositos` (
+  `id_deposito` int(11) NOT NULL,
+  `numero_comprobante` varchar(50) NOT NULL,
+  `tipo_deposito` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1 = transferencia, 2 = deposito directo.',
+  `fecha` date NOT NULL,
+  `monto` decimal(12,2) NOT NULL,
+  `detalle` varchar(300) DEFAULT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1 = activo, 0 = inactivo',
+  `id_usuario` int(11) NOT NULL,
+  `fecha_registro` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `entradas_y_salidas`
+--
+
+CREATE TABLE `entradas_y_salidas` (
+  `id_log` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `fecha_entrada` datetime DEFAULT NULL,
+  `fecha_salida` datetime DEFAULT NULL,
+  `intentos_fallidos` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historial_cheque`
+--
+
+CREATE TABLE `historial_cheque` (
+  `id_historial` int(11) NOT NULL,
+  `id_cheque` int(11) NOT NULL,
+  `estado_anterior` tinyint(4) NOT NULL COMMENT '1 = emitido. 2 = pendiente. 3 = cobrado. 4 = anulado. 5 = sacado de circulacion.',
+  `estado_nuevo` tinyint(4) NOT NULL COMMENT '1 = emitido. 2 = pendiente. 3 = cobrado. 4 = anulado. 5 = sacado de circulacion.',
+  `fecha_cambio` datetime NOT NULL DEFAULT current_timestamp(),
+  `id_usuario` int(11) NOT NULL,
+  `observacion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `objeto_gasto`
+--
+
+CREATE TABLE `objeto_gasto` (
+  `id_objeto_gasto` int(2) NOT NULL,
+  `codigo` varchar(20) NOT NULL,
+  `descripcion` varchar(200) NOT NULL,
+  `estado` tinyint(4) NOT NULL CHECK (`estado` in (1,2,3,6)),
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `objeto_gasto`
+--
+
+INSERT INTO `objeto_gasto` (`id_objeto_gasto`, `codigo`, `descripcion`, `estado`, `fecha_creacion`) VALUES
+(1, '120', 'Impresión, Encuadernación y otros', 1, '2026-08-26 09:36:44'),
+(2, '130', 'Información y Publicidad', 1, '2026-08-26 09:36:44'),
+(3, '141', 'Viáticos dentro del país', 1, '2026-08-26 09:36:44'),
+(4, '151', 'Transporte dentro del país', 1, '2026-08-26 09:36:44'),
+(5, '169', 'Otros Servicios', 1, '2026-08-26 09:36:44'),
+(6, '180', 'Mantenimiento y Reparación', 1, '2026-08-26 09:36:44'),
+(7, '181', 'Mantenimiento y Reparación de Edificios', 1, '2026-08-26 09:36:44'),
+(8, '182', 'Mantenimiento de Maquinarias y Otros Equipos', 1, '2026-08-26 09:36:44'),
+(9, '183', 'Mantenimiento de Mobiliario y Equipo de Oficina', 1, '2026-08-26 09:36:44'),
+(10, '185', 'Mantenimiento de Equipos de Computación', 1, '2026-08-26 09:36:44'),
+(11, '189', 'Otros Mantenimientos y Reparaciones', 1, '2026-08-26 09:36:44'),
+(12, '200', 'Alimentos y Bebidas', 2, '2026-08-26 09:36:44'),
+(13, '210', 'Textiles y Vestuarios', 2, '2026-08-26 09:36:44'),
+(14, '220', 'Combustibles y Lubricantes', 2, '2026-08-26 09:36:44'),
+(15, '230', 'Productos de Papel y Cartón ', 2, '2026-08-26 09:36:44'),
+(16, '240', 'Productos Químicos y Conexos', 2, '2026-08-26 09:36:44'),
+(17, '250', 'Otros Materiales de Construcción', 2, '2026-08-26 09:36:44'),
+(18, '260', 'Productos Varios', 2, '2026-08-26 09:36:44'),
+(19, '262', 'Herramientas', 2, '2026-08-26 09:36:44'),
+(20, '265', 'Materiales, Accesorios y Suministros de Computación', 2, '2026-08-26 09:36:44'),
+(21, '270', 'Útiles y Materiales Diversos', 2, '2026-08-26 09:36:44'),
+(22, '280', 'Repuestos', 2, '2026-08-26 09:36:44'),
+(23, '320', 'Equipo Educacional y Recreativo', 3, '2026-08-26 09:36:44'),
+(24, '340', 'Equipo de Oficina', 3, '2026-08-26 09:36:44'),
+(25, '350', 'Mobiliario de Oficina', 3, '2026-08-26 09:36:44'),
+(26, '370', 'Maquinarias y Equipos Varios', 3, '2026-08-26 09:36:44'),
+(27, '380', 'Equipo de Computación', 3, '2026-08-26 09:36:44'),
+(28, '610', 'Comedor Escolar (60%)', 6, '2026-08-26 09:36:44'),
+(29, '611', 'Donaciones Estudiantiles (40%)', 6, '2026-08-26 09:36:44');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `proveedores`
+--
+
+CREATE TABLE `proveedores` (
+  `id_proveedor` int(11) NOT NULL COMMENT 'identifica al proveedor dentro de la bd, se usa para las fk.',
+  `nombre` varchar(150) NOT NULL,
+  `telefono` varchar(30) DEFAULT NULL,
+  `correo` varchar(100) DEFAULT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1 = activo, 0 = inactivo.',
+  `ruc` varchar(20) NOT NULL COMMENT 'Identifica legalmente al proveedor y puede cambiar en situaciones muy especificas.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id_usuario` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `apellido` varchar(50) NOT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL COMMENT 'Debe guardarse el hash.',
+  `correo` varchar(100) NOT NULL,
+  `rol` varchar(20) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1 = activo, 0 = inactivo.',
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `intentos_fallidos` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `bloqueado_hasta` datetime DEFAULT NULL COMMENT 'Se usa si se pasa cierto limite de intentos.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `bitacora`
+--
+ALTER TABLE `bitacora`
+  ADD PRIMARY KEY (`id_bitacora`),
+  ADD KEY `fk_bitacora_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `cheques`
+--
+ALTER TABLE `cheques`
+  ADD PRIMARY KEY (`id_cheque`),
+  ADD UNIQUE KEY `numero_cheque` (`numero_cheque`),
+  ADD KEY `fk_cheque_proveedor` (`id_proveedor`),
+  ADD KEY `fk_cheque_objeto` (`id_objeto_gasto`),
+  ADD KEY `fk_cheque_usuario_creacion` (`id_usuario_creacion`),
+  ADD KEY `fk_cheque_usuario_anulacion` (`id_usuario_anulacion`);
+
+--
+-- Indices de la tabla `conciliaciones`
+--
+ALTER TABLE `conciliaciones`
+  ADD PRIMARY KEY (`id_conciliacion`),
+  ADD UNIQUE KEY `periodo` (`periodo`),
+  ADD KEY `fk_conciliacion_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `conciliacion_detalle_cheque`
+--
+ALTER TABLE `conciliacion_detalle_cheque`
+  ADD PRIMARY KEY (`id_conciliacion`,`id_cheque`),
+  ADD KEY `fk_detalle_cheque` (`id_cheque`);
+
+--
+-- Indices de la tabla `conciliacion_detalle_deposito`
+--
+ALTER TABLE `conciliacion_detalle_deposito`
+  ADD PRIMARY KEY (`id_conciliacion`,`id_deposito`),
+  ADD KEY `fk_detalle_deposito` (`id_deposito`);
+
+--
+-- Indices de la tabla `depositos`
+--
+ALTER TABLE `depositos`
+  ADD PRIMARY KEY (`id_deposito`),
+  ADD KEY `fk_deposito_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `entradas_y_salidas`
+--
+ALTER TABLE `entradas_y_salidas`
+  ADD PRIMARY KEY (`id_log`),
+  ADD KEY `fk_entrada_salida_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `historial_cheque`
+--
+ALTER TABLE `historial_cheque`
+  ADD PRIMARY KEY (`id_historial`),
+  ADD KEY `fk_historial_cheque` (`id_cheque`),
+  ADD KEY `fk_historial_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `objeto_gasto`
+--
+ALTER TABLE `objeto_gasto`
+  ADD PRIMARY KEY (`id_objeto_gasto`);
+
+--
+-- Indices de la tabla `proveedores`
+--
+ALTER TABLE `proveedores`
+  ADD PRIMARY KEY (`id_proveedor`),
+  ADD UNIQUE KEY `ruc` (`ruc`);
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `usuario` (`usuario`),
+  ADD UNIQUE KEY `usuario_2` (`usuario`),
+  ADD UNIQUE KEY `uq_usuario` (`usuario`),
+  ADD UNIQUE KEY `correo` (`correo`);
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `bitacora`
+--
+ALTER TABLE `bitacora`
+  ADD CONSTRAINT `fk_bitacora_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cheques`
+--
+ALTER TABLE `cheques`
+  ADD CONSTRAINT `fk_cheque_objeto` FOREIGN KEY (`id_objeto_gasto`) REFERENCES `objeto_gasto` (`id_objeto_gasto`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cheque_proveedor` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedores` (`id_proveedor`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cheque_usuario_anulacion` FOREIGN KEY (`id_usuario_anulacion`) REFERENCES `usuarios` (`id_usuario`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cheque_usuario_creacion` FOREIGN KEY (`id_usuario_creacion`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `conciliaciones`
+--
+ALTER TABLE `conciliaciones`
+  ADD CONSTRAINT `fk_conciliacion_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `conciliacion_detalle_cheque`
+--
+ALTER TABLE `conciliacion_detalle_cheque`
+  ADD CONSTRAINT `fk_detalle_cheque` FOREIGN KEY (`id_cheque`) REFERENCES `cheques` (`id_cheque`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_cheque_conciliacion` FOREIGN KEY (`id_conciliacion`) REFERENCES `conciliaciones` (`id_conciliacion`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `conciliacion_detalle_deposito`
+--
+ALTER TABLE `conciliacion_detalle_deposito`
+  ADD CONSTRAINT `fk_detalle_deposito` FOREIGN KEY (`id_deposito`) REFERENCES `depositos` (`id_deposito`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_deposito_conciliacion` FOREIGN KEY (`id_conciliacion`) REFERENCES `conciliaciones` (`id_conciliacion`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `depositos`
+--
+ALTER TABLE `depositos`
+  ADD CONSTRAINT `fk_deposito_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `entradas_y_salidas`
+--
+ALTER TABLE `entradas_y_salidas`
+  ADD CONSTRAINT `fk_entrada_salida_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `historial_cheque`
+--
+ALTER TABLE `historial_cheque`
+  ADD CONSTRAINT `fk_historial_cheque` FOREIGN KEY (`id_cheque`) REFERENCES `cheques` (`id_cheque`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_historial_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+:root {
+    --celeste: #ccefff;
+    --celeste-claro: #effbff;
+    --celeste-fuerte: #75c9eb;
+    --azul: #285f8f;
+    --azul-oscuro: #183f68;
+    --blanco: #ffffff;
+    --borde: #8cbdd5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 28px;
+    font-family: Tahoma, Verdana, sans-serif;
+    color: #24445c;
+    background:
+        radial-gradient(circle at 15% 20%, #fff 0 4px, transparent 5px),
+        linear-gradient(#a8e2fa, #eafaff 65%, #bce9d1);
+    background-size: 42px 42px, auto;
+}
+
+button { font: inherit; }
+
+.nubes {
+    position: fixed;
+    width: 160px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.65);
+    filter: blur(1px);
+    z-index: -1;
+}
+
+.nube-1 { top: 8%; left: 5%; }
+.nube-2 { right: 7%; bottom: 12%; transform: scale(1.3); }
+
+.ventana {
+    width: min(1180px, 100%);
+    min-height: 720px;
+    margin: auto;
+    overflow: hidden;
+    border: 3px solid var(--blanco);
+    border-radius: 9px 9px 3px 3px;
+    background: var(--celeste-claro);
+    box-shadow: 0 0 0 2px #4b91b8, 9px 12px 0 rgba(32,83,110,.18);
+}
+
+.barra-titulo {
+    min-height: 72px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    background: linear-gradient(180deg, #63c8ee 0%, #388bc2 52%, #2b72aa 53%, #69c9ed 100%);
+    border-bottom: 2px solid #1d5b89;
+}
+
+.titulo-programa { display: flex; align-items: center; gap: 12px; }
+.titulo-programa h1 { margin: 0; font-size: 23px; text-shadow: 2px 2px #245b89; }
+.titulo-programa p { margin: 3px 0 0; font-size: 12px; }
+
+.logo {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border: 2px outset white;
+    border-radius: 50%;
+    color: #24658e;
+    background: linear-gradient(#fff, #c6f4ff);
+    font: bold 28px Georgia, serif;
+}
+
+.botones-ventana { display: flex; gap: 5px; }
+.botones-ventana span {
+    width: 27px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+    border: 2px outset #d9f5ff;
+    background: #a4def3;
+    color: #174f78;
+    font-weight: bold;
+}
+
+.barra-info {
+    min-height: 34px;
+    padding: 7px 14px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 25px;
+    font-size: 12px;
+    background: linear-gradient(#f7fdff, #d2edf8);
+    border-bottom: 1px solid var(--borde);
+}
+
+.boton-menu { display: none; }
+.contenido { min-height: 575px; display: grid; grid-template-columns: 230px 1fr; }
+
+.menu-lateral {
+    padding: 18px 12px;
+    background: linear-gradient(90deg, #bde9fa, #e6f8ff);
+    border-right: 2px solid var(--borde);
+}
+
+.perfil { text-align: center; padding-bottom: 16px; border-bottom: 1px dashed #65a9ca; }
+.avatar {
+    width: 64px;
+    height: 64px;
+    margin: auto;
+    display: grid;
+    place-items: center;
+    border: 3px double #4c94b9;
+    border-radius: 50%;
+    background: white;
+    font-size: 30px;
+}
+.perfil p { margin: 8px 0 1px; font-weight: bold; color: var(--azul-oscuro); }
+.perfil small { color: #4f7287; }
+
+nav { margin-top: 18px; display: grid; gap: 8px; }
+.opcion {
+    width: 100%;
+    padding: 11px 10px;
+    border: 2px outset #dff7ff;
+    border-radius: 3px;
+    text-align: left;
+    color: #245273;
+    background: linear-gradient(#fafdff, #bce8f8);
+    cursor: pointer;
+}
+.opcion:hover, .opcion.activa {
+    color: white;
+    background: linear-gradient(#79d2ef, #3b8fc0);
+    border-color: #a8e9ff;
+}
+.opcion:active { border-style: inset; }
+.opcion.salir { margin-top: 12px; color: #7b3b52; background: linear-gradient(#fff, #f7d7e3); }
+.opcion.salir:hover { color: white; background: linear-gradient(#ee9bb9, #bc6686); }
+
+.estado-sistema { margin-top: 26px; text-align: center; font-size: 11px; }
+.luz { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #41c86d; box-shadow: 0 0 5px #41c86d; }
+
+.area-trabajo { padding: 28px; background: rgba(255,255,255,.72); }
+.seccion { display: none; }
+.seccion.visible { display: block; }
+.encabezado-seccion { display: flex; justify-content: space-between; align-items: end; border-bottom: 3px double var(--borde); padding-bottom: 12px; }
+.ruta { margin: 0 0 6px; color: #65899f; font-size: 12px; }
+h2 { margin: 0; color: var(--azul-oscuro); font-size: 25px; }
+.etiqueta { padding: 5px 10px; border: 1px solid #76b7d3; border-radius: 12px; background: #dcf6ff; font-size: 11px; }
+
+.mensaje-bienvenida {
+    margin: 22px 0;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #85bfd8;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #d9f6ff, #f8fdff);
+    box-shadow: inset 0 0 10px white;
+}
+.mensaje-bienvenida h3, .mensaje-bienvenida p { margin: 3px 0; }
+.estrella { font-size: 34px; color: #ffcc57; text-shadow: 1px 1px #af8841; }
+
+.tarjetas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+.tarjeta {
+    padding: 16px;
+    min-height: 165px;
+    border: 2px outset white;
+    border-radius: 5px;
+    background: linear-gradient(145deg, white, #d6f3ff);
+    box-shadow: 3px 4px 0 #acd2e2;
+}
+.tarjeta .icono { font-size: 27px; }
+.tarjeta p { min-height: 38px; margin: 10px 0 3px; font-size: 13px; }
+.tarjeta strong { display: block; font: bold 32px "Trebuchet MS", sans-serif; color: #287aa9; }
+.tarjeta small { color: #718b99; font-size: 10px; }
+
+.panel-inferior {
+    margin-top: 25px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #9ec7d9;
+    background: repeating-linear-gradient(0deg, #eefbff 0 4px, #e4f7fd 4px 8px);
+}
+.panel-inferior h3, .panel-inferior p { margin: 4px 0; }
+.reloj { padding: 10px; border: 1px inset white; background: white; font-size: 12px; }
+
+.aviso-modulo { max-width: 600px; margin: 75px auto; padding: 35px; text-align: center; border: 2px outset white; background: #e5f8ff; box-shadow: 5px 6px 0 #a9d0e1; }
+.monitor { font-size: 55px; margin-bottom: 15px; }
+.aviso-modulo p { line-height: 1.6; }
+.aviso-modulo button {
+    padding: 9px 18px;
+    border: 2px outset white;
+    color: #174d72;
+    background: linear-gradient(#fff, #a9ddf2);
+    cursor: pointer;
+}
+
+footer { padding: 7px 12px; display: flex; justify-content: space-between; border-top: 1px solid #7aafc7; background: #c8eaf7; font-size: 10px; }
+.notificacion { position: fixed; right: 25px; bottom: 25px; padding: 13px 18px; border: 2px outset white; background: #e1f8ff; box-shadow: 3px 4px 0 rgba(35,86,114,.25); opacity: 0; transform: translateY(15px); pointer-events: none; transition: .25s; }
+.notificacion.mostrar { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 850px) {
+    body { padding: 12px; }
+    .contenido { grid-template-columns: 190px 1fr; }
+    .tarjetas { grid-template-columns: repeat(2, 1fr); }
+    .panel-inferior { align-items: flex-start; gap: 15px; flex-direction: column; }
+}
+
+@media (max-width: 620px) {
+    body { padding: 0; }
+    .ventana { min-height: 100vh; border-radius: 0; }
+    .titulo-programa h1 { font-size: 18px; }
+    .botones-ventana { display: none; }
+    .barra-info { justify-content: space-between; align-items: center; gap: 8px; }
+    .barra-info span:first-of-type { display: none; }
+    .boton-menu { display: block; border: 1px outset white; background: #dff7ff; color: #23577a; }
+    .contenido { display: block; position: relative; }
+    .menu-lateral { position: absolute; z-index: 5; width: 230px; min-height: 100%; transform: translateX(-105%); transition: .25s; box-shadow: 5px 0 10px rgba(32,80,105,.25); }
+    .menu-lateral.abierto { transform: translateX(0); }
+    .area-trabajo { min-height: 650px; padding: 20px 14px; }
+    .tarjetas { grid-template-columns: 1fr; }
+    .tarjeta { min-height: 135px; }
+    .encabezado-seccion { align-items: flex-start; gap: 12px; }
+    footer { gap: 5px; }
+}
